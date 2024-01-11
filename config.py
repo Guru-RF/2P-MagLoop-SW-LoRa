@@ -1,4 +1,4 @@
 # Device NAME
 name = 'ml0'
 # Default ACTIVE port
-default_port = 1 # 0 Disable default port (all off)
+default_port = 0 # 0 Disable default port (all off)

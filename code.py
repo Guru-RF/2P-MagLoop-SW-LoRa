@@ -34,11 +34,11 @@ ports = {
 }
 
 for number, port in ports.items():
-    port.value = False
+    port.value = True
     time.sleep(0.01)
 
 if config.default_port is not 0:
-  ports[str(int(config.default_port))].value = True
+  ports[str(int(config.default_port))].value = False
 
 print(red(config.name + " -=- " + VERSION))
 
@@ -60,15 +60,15 @@ while True:
         if packet[:3] == (b'<\xaa\x01'):
                 rawdata = bytes(packet[3:]).decode('utf-8')
                 if rawdata.startswith(config.name):
+                    for number, port in ports.items():
+                        port.value = True
                     try:
-                        if ports[str(int(rawdata[-1]))].value is True:
-                          ports[str(int(rawdata[-1]))].value = False
-                          print(purple("PORT REQ: Turned port " + str(int(rawdata[-1])) + " off"))
-                        elif ports[str(int(rawdata[-1]))].value is False:
-                          ports[str(int(rawdata[-1]))].value = True
-                          print(purple("PORT REQ: Turned port " + str(int(rawdata[-1])) + " on"))
+                        ports[str(int(rawdata[-1]))].value = False
+                        print(purple("PORT REQ: Turned port " + str(int(rawdata[-1])) + " on"))
                     except:
-                        print(purple("PORT REQ: Wrong Port NR"))
+                        print(purple("PORT REQ: Turned all ports on"))
+                        ports["1"].value = False
+                        ports["2"].value = False
                 else:
                     print(yellow("Received another switch port req packet: " + str(rawdata)))
         else:
