@@ -37,7 +37,7 @@ for number, port in ports.items():
     port.value = True
     time.sleep(0.01)
 
-if config.default_port is not 0:
+if config.default_on is False:
   ports[str(int(config.default_port))].value = False
 
 print(red(config.name + " -=- " + VERSION))
@@ -66,9 +66,14 @@ while True:
                         ports[str(int(rawdata[-1]))].value = False
                         print(purple("PORT REQ: Turned port " + str(int(rawdata[-1])) + " on"))
                     except:
-                        print(purple("PORT REQ: Turned all ports on"))
-                        ports["1"].value = False
-                        ports["2"].value = False
+                        if str(int(rawdata[-1])) is "4":
+                          print(purple("PORT REQ: Turned all ports off"))
+                          ports["1"].value = True
+                          ports["2"].value = True
+                        else:
+                          print(purple("PORT REQ: Turned all ports on"))
+                          ports["1"].value = False
+                          ports["2"].value = False
                 else:
                     print(yellow("Received another switch port req packet: " + str(rawdata)))
         else:

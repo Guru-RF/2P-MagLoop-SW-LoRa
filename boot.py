@@ -19,7 +19,7 @@ else:
 
     usb_cdc.enable(console=True, data=False)
 
-    new_name = "LORA2PSW"
+    new_name = "LORAOCTA"
     storage.remount("/", readonly=False)
     m = storage.getmount("/")
     m.label = new_name
