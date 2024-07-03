@@ -4,6 +4,8 @@ import busio
 from digitalio import DigitalInOut, Direction, Pull
 import adafruit_rfm9x
 import config
+from microcontroller import watchdog as w
+from watchdog import WatchDogMode
 
 def purple(data):
   stamp = time.time()
@@ -50,14 +52,19 @@ spi = busio.SPI(board.GP10, MOSI=board.GP11, MISO=board.GP8)
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000, agc=False,crc=True)
 rfm9x.tx_power = 5
 
+# configure watchdog
+w.timeout = 5
+w.mode = WatchDogMode.RESET
+w.feed()
+
 while True:
     msg = yellow("Waiting for LoRa packet ...")
     print(f"{msg}\r", end="")
-    packet = rfm9x.receive(with_header=True,timeout=10)
+    packet = rfm9x.receive(w,with_header=True,timeout=10)
 
     if packet is not None:
-        #print(packet)
-        if packet[:3] == (b'<\xaa\x01'):
+        print(packet)
+        if packet[:3] == (b'<\xAA\x01'):
                 rawdata = bytes(packet[3:]).decode('utf-8')
                 if rawdata.startswith(config.name):
                     for number, port in ports.items():
